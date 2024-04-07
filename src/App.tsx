@@ -1,26 +1,74 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/home';
+import Favoris from './pages/Favoris';
+import SingleQuiz from './pages/SinglePubQuiz';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+    children: [
+      {
+        path: '',
+        element: <Login />
+      },
+      {
+        path: '/register',
+        element: <Register />
+      },
+      {
+        path: '/home',
+        element: <HomeRoot />,
+        children: [
+            {
+              path: '',
+              element:<Home />
+            },
+          {
+          
+            path: 'quiz',
+            element: <div className='w-full h-screen bg-cyan-300'> </div>
+          }
+        ]
+      },
+      {
+        path: '/favoris',
+        element: <Favoris />
+      },
+      {
+        path: '/profil',
+        element: <div className=''>Profil</div>
+      },
+    ]
+  }
+])
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="w-full h-screen bg-white">
+      <RouterProvider router={router}></RouterProvider>
     </div>
   );
+}
+
+
+function Root(){
+  return <>
+ 
+        <Outlet />
+      
+  </>
+}
+
+function HomeRoot (){
+  return <>
+      <Outlet />
+  </>
 }
 
 export default App;
