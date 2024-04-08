@@ -4,7 +4,7 @@ QuizApp est une application React qui permet aux utilisateurs de créer et de jo
 
 ## Fonctionnalités
 
-- Création de quiz personnalisés
+- Création de quiz 
 - Participation à des quiz existants
 - Suivi des scores
 - Interface conviviale et réactive
