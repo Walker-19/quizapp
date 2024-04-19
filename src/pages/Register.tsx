@@ -4,7 +4,10 @@ import '../index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage } from "@fortawesome/free-regular-svg-icons";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { json } from "stream/consumers";
+import { faArrowRight, faEye } from "@fortawesome/free-solid-svg-icons";
+import Profil from "../components/AddProfile";
 
 export default function Register(){
     const [previewavatar, setAvatar] = useState('')
@@ -13,11 +16,23 @@ export default function Register(){
         firstname: '',
         lastname: '',
         email: '',
+        cf_email: '',
         password: '',
+        cf_password: '',
+        msgPassword: '',
     })
+    const [msgEmail, setMsgEmail] = useState<string>("")
+    const [msgmdp, setMsgmdp] = useState<string>("")
+    const  [next, setNext] = useState(true);
 
-    const [error, setError] = useState('') // Affiche le message d'alerte lors de l'inscription
+    const refMdp = useRef<HTMLInputElement>(null)
+    const refcfMdp = useRef<HTMLInputElement>(null)
+    const [disable, setDisable] = useState(true);
     const navigate = useNavigate();
+    // Données du formulaire
+     const formData = new FormData();
+
+
 
     const handleFileInputChange = (e: any) => {
         const file = e.target.files[0];
@@ -41,13 +56,8 @@ export default function Register(){
     
     const senData = async (e: FormEvent) => {
         e.preventDefault();
-        const {email, firstname, lastname, password} = data;
-        const formData = new FormData();
-        formData.append('password', password);
-        formData.append('lastname', lastname);
-        formData.append('firstname', firstname);
-        formData.append('email', email);
-        formData.append('avatar', profil);
+       
+        
         // console.log(formData, profil)
         // Ajouter l'avatar si disponible
         
@@ -62,12 +72,15 @@ export default function Register(){
             if (!response) {
                     console.log("la requête a échoué");
             }
-            else {
-                    const text = (await response.text()).valueOf()
-                    if (text== "OK") {
-                        navigate('/home')
-                    }
-                    setError(text);
+            else { 
+                const v : string = (await response.text()).valueOf()
+                if (v == "champs vide") {
+                    
+                     // Affiche le message d'alerte lors de l'inscription
+                }
+                else if ((v == "OK")) {
+                        console.log(response.json());
+                }
                 
             }
         } catch (error) {
@@ -78,39 +91,120 @@ export default function Register(){
     const handlechange = (e: ChangeEvent<HTMLInputElement>) => {
             setData({
                 ...data,
-                [e.target.name] : e.target.value
+            
+                [e.target.name] : e.target.name == "email" ? e.target.value.trim().toLowerCase() : e.target.value
             })
     
         // console.log(data)
     }
   
+    const confirmationEmail = (e: ChangeEvent<HTMLInputElement>) => {
+        const cf = e.target.value.trim().toLowerCase();
+        if (cf !== data.email) {
+          setMsgEmail("Votre email n'est pas identique")
+        }
+        else {
 
+            setMsgEmail(" ")
+           
+        }
+        setData({
+            ...data,
+            cf_email: cf
+        })
+
+    }
+    const confirmationPassword = (e: ChangeEvent<HTMLInputElement>) => {
+         const cf = e.target.value.trim();
+        if (cf !== data.password) {
+          setMsgmdp("Votre mot de passe n'est pas identique")
+        }
+        else {
+
+            setMsgmdp(" ")
+           
+        }
+
+      setData({
+        ...data,
+        cf_password: cf
+      });
+    
+      console.log(msgmdp);
+    }
+    //SHOW password
+    function ShowPassword() {
+        if (refMdp.current?.contains) {
+           refMdp.current.type === "password" ? refMdp.current.type ="text" : refMdp.current.type = "password"
+        }  
+  }
+    //SHOW cfpassword
+    function ShowcfPassword() {
+        if (refcfMdp.current) {
+            refcfMdp.current.type === "password" ? refcfMdp.current.type ="text" : refcfMdp.current.type = "password"
+         }
+  }
+
+
+  function checkInput(){
+      if (data.email && data.password !== "") {
+        console.log("checkInput")
+        setDisable(false);
+      
+    }
+  }
+
+
+
+    
     return <>
-            <form action="" className="w-full h-screen flex justify-center items-center flex-col relative " encType="multipart/form-data" onSubmit={(e) => senData(e)}>
-            <h4 className="font-bold text-2xl bg-transparent border-slate-400 px-2 py-1 rounded-lg z-10 absolute top-0 animate-pulse "><span className="text-transparent  bg-clip-text bg-gradient-to-br from-yellow-300 to-red-400">Quiz</span> <span className="text-transparent bg-clip-text  bg-gradient-to-br from-purple-400 to-blue-400">App</span></h4>
-                <div className="w-32 h-32 absolute top-10 border border-slate-300 rounded-full">
-                    <input type="file" className="w-10 h-12 p-5 object-cover absolute cursor-pointer bottom-0 right-3 z-10 border-slate-400 bg-transparent opacity-0" onChange={(e) => handleFileInputChange(e)} />
-                    <FontAwesomeIcon icon={faFileImage} className="absolute z-0 -bottom-2 bg-white rounded-full p-2 right-2 text-3xl"  />
-                <img src={previewavatar} alt="" className="w-32 h-32 border border-slate-400 shadow-2xl shadow-slate-300  rounded-full z-0"/>
-                </div>
-                <div className="w-box-login shadow-2xl shadow-gray-300 rounded-xl p-8 flex flex-col mt-3 gap-4">
-               { error != '' ? ( <p className="text-red-600 text-sm font-normal text-center py-10">{error}</p>) : ''}
-                        <div className="w-full flex flex-row gap-2">
-                                <Input name="firstname" label="Firstname" type="text" value={data.firstname} change={(e) => handlechange(e)} />
-                                <Input name="lastname" label="Lastaname" type="text" value={data.lastname}  change={(e) => handlechange(e)} />
-                        </div>
-                        <div className="w-full h-full flex flex-col gap-5">
-                        <Input name="email" label="Email" type="text" value={data.email}  change={(e) => handlechange(e)} />
-                        <Input name="password" label="Mot de passe" type="password" value={data.password} change={(e) => handlechange(e)}  />
+        { next ? ( <div className="w-full h-screen bg-slate-100 flex flex-row" >
+            <h6 className="text-xl font-bold fixed top-4 left-10 coming-soon-regular bg-gradient-to-tr from-blue-500 to-purple-500 bg-clip-text text-transparent">QUIZ APP</h6>
+             <div className="w-1/2 h-screen flex justify-center items-center">
+                <form action="" className="w-full h-1/2 px-7" onSubmit={(e) => senData(e)} onMouseEnter={() => checkInput()}>
+                    <div className="w-full flex flex-row justify-around ">
+                        <label htmlFor="firstname" className="w-1/2 flex justify-center p-5">
+                            <input type="text" name="firstname" value={data.firstname} placeholder="Entrer votre prénom" className="w-full text-sm  font-mono p-2 border border-slate-200 rounded-lg focus:outline-none focus:border focus:border-purple-500 " onChange={(e) => handlechange(e)} />
+                        </label>
+                        <label htmlFor="lastname" className="w-1/2 flex justify-center  p-5">
+                            <input type="text" name="lastname" value={data.lastname} placeholder="Entrer votre prénom" className="w-full text-sm  p-2 border border-slate-200 rounded-lg focus:outline-none focus:border focus:border-purple-500 " onChange={(e) => handlechange(e)} />
+                        </label>
+                    </div>
+                    <div className="w-full flex flex-row justify-around ">
+                        <label htmlFor="email" className="w-1/2 flex justify-center p-5">
+                            <input type="text" name="email" placeholder="Entrer votre email" value={data.email} className="w-full text-sm  font-mono p-2 border border-slate-200 rounded-lg focus:outline-none focus:border focus:border-purple-500" onChange={(e) => handlechange(e)} />
+                        </label>
+                        <label htmlFor="cf_email" className="w-1/2 flex justify-center flex-col relative  p-5">
+                            <input type="text" name="cf_email" placeholder="Confirmer votre email" value={data.cf_email}  className="w-full text-sm  p-2 border border-slate-200 rounded-lg focus:outline-none focus:border focus:border-purple-500 " onChange={(e) => confirmationEmail (e)} />
+                            <span className="text-xs text-red-600 absolute bottom-0">{msgEmail}</span>
+                        </label>
+                    </div>
+                    <div className="w-full flex flex-row justify-around ">
+                    <label htmlFor="cf_password" className="w-1/2 relative flex justify-center flex-col  p-5">
+                            <FontAwesomeIcon icon={faEye} className="absolute right-7" onClick={ShowPassword}  />
+                            <input type="password" name="password" value={data.password} ref={refMdp} className="w-full max-h-14 text-sm  p-2 border border-slate-200 rounded-lg focus:outline-none focus:border focus:border-purple-500" required onChange={(e) => handlechange(e)} />
+                        </label>
+                        <label htmlFor="cf_password" className="w-1/2 relative flex justify-center flex-col  p-5">
+                        <FontAwesomeIcon icon={faEye} className="absolute right-7" onClick={ShowcfPassword}  />
+                            <input type="password" name="cf_password" placeholder="Confirmer votre mot de passe" value={data.cf_password} className="w-full max-h-14 text-sm  p-2 border border-slate-200 rounded-lg focus:outline-none focus:border focus:border-purple-500" ref={refcfMdp}  onChange={(e) => confirmationPassword(e)}/>
+                            <span className="text-xs text-red-600 absolute bottom-0">{msgmdp}</span>
+                        </label>
+                    </div>
+                    <div className="w-full flex justify-center items-center mt-5">
+                        <button className="w-max h-max p-2 flex justify-center bg-gradient-to-r from-blue-500 to-purple-500 rounded-full disabled:bg-gradient-to-r disabled:from-blue-300 disabled:to-purple-300 disabled:cursor-not-allowed" disabled={disable} onClick={() => setNext(false)}>
+                            <span className="text-md font-bold text-white font-mono">Suivant
+                            <FontAwesomeIcon icon={faArrowRight} className="ml-3" />
+                            </span>
+                        </button>
+                    </div>
+                </form>
+             </div>
+             <div className="w-1/2  h-screen flex items-center relative bg-white">
+                <div className="w-full h-1/2 bg-white  bg-bg-3 bg-contain bg-no-repeat bg-center rounded-xl absolute -left-6"></div>
+             </div>
+             </div>
+)
 
-                        <div className="w-full flex justify-center items-center">
-                            <button className="w-max px-2 py-1 rounded-xl font-mono hover:bg-black/90 hover:animate-pulse   bg-black text-white">S'inscrire</button>
-                        </div>
-                    </div>        
-                        <Link to={'/'}>
-                        <p className="text-center text-blue-500 font-bold text-xs">Vous avez un compte ?</p>
-                        </Link>
-            </div>  
-            </form>
-        </>
+   : <Profil />
+}        </>
 }
