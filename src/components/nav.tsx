@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { redirect, useNavigate } from "react-router-dom";
 
@@ -36,7 +37,10 @@ export default function Nav (){
     }
     const [indexMenu, setIndex] = useState(0)
     return <>
-              <div className="min-w-max w-96 md:w-1/3  h-16 z-20 backdrop-blur-2xl shadow-2xl shadow-gray-300 bg-white/30  p-2 fixed top-10 left-1/2 -translate-x-1/2 overflow-hidden border border-slate-300 rounded-full flex flex-row gap-5 justify-between">
+              <motion.div
+              initial={{y: -200,opacity: 0}}
+              animate={{y : 0, x: 0, opacity: 1, translateX: '-50%'}}
+              className="min-w-max w-96 md:w-1/3  h-16 z-20 backdrop-blur-2xl shadow-2xl shadow-gray-300 bg-white/30  p-2 fixed top-10 left-1/2 -translate-x-1/2 overflow-hidden border border-slate-300 rounded-full flex flex-row gap-5 justify-between">
                 {
                     menu.map((item, index) => (
                         <div key={index} className={`w-1/3 backdrop-blur-2xl ${indexMenu === index ? 'bg-white/60' : ''} rounded-full flex flex-row justify-center items-center gap-2 hover:bg-white/60  cursor-pointer`} onClick={()=>  PageRedirect(index) }>
@@ -48,6 +52,6 @@ export default function Nav (){
                 }
                
                 
-            </div>
+            </motion.div>
     </>
 }

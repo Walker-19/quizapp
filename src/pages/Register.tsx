@@ -1,17 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
-import Input from "./Input";
+
 import '../index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage } from "@fortawesome/free-regular-svg-icons";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
-import { json } from "stream/consumers";
+import {motion} from 'framer-motion';
 import { faArrowRight, faEye } from "@fortawesome/free-solid-svg-icons";
 import Profil from "../components/AddProfile";
+import { UserController } from "../Controller/UserController";
 
 export default function Register(){
-    const [previewavatar, setAvatar] = useState('')
-    const [profil, setProfil] : any =  useState()
+
     const [data, setData] = useState({
         firstname: '',
         lastname: '',
@@ -34,25 +34,9 @@ export default function Register(){
 
 
 
-    const handleFileInputChange = (e: any) => {
-        const file = e.target.files[0];
-        previewFile(file);
-        if(file){
-            setProfil(file)
-        }
-    };
+  
 
-    const previewFile = (file: any) => {
-        const reader = new FileReader();
-        
-        reader.readAsDataURL(file);
-        reader.onloadend = () => {
-            if (typeof reader.result === 'string') {
-                setAvatar(reader.result);
-            }
-            console.log(reader.result)
-        };
-    };
+
     
     const senData = async (e: FormEvent) => {
         e.preventDefault();
@@ -62,30 +46,8 @@ export default function Register(){
         // Ajouter l'avatar si disponible
         
         
-        try {
-            const response = await fetch('http://localhost:3001/register', {
-                method: 'POST',
-                body: formData // Utiliser formData pour envoyer les données
-                
-            })
-
-            if (!response) {
-                    console.log("la requête a échoué");
-            }
-            else { 
-                const v : string = (await response.text()).valueOf()
-                if (v == "champs vide") {
-                    
-                     // Affiche le message d'alerte lors de l'inscription
-                }
-                else if ((v == "OK")) {
-                        console.log(response.json());
-                }
-                
-            }
-        } catch (error) {
-            console.error('Erreur lors de l\'envoi de la requête:', error);
-        }
+        const userCtl = new UserController();
+       const [user, message ] = await userCtl.register(formData);
     };
     
     const handlechange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -147,9 +109,11 @@ export default function Register(){
 
 
   function checkInput(){
-      if (data.email && data.password !== "") {
-        console.log("checkInput")
-        setDisable(false);
+      if (data.password !== "") {
+        if (data.email != "") {
+            console.log("checkInput")
+            setDisable(false);
+        }
       
     }
   }
@@ -159,8 +123,17 @@ export default function Register(){
     
     return <>
         { next ? ( <div className="w-full h-screen bg-slate-100 flex flex-row" >
-            <h6 className="text-xl font-bold fixed top-4 left-10 coming-soon-regular bg-gradient-to-tr from-blue-500 to-purple-500 bg-clip-text text-transparent">QUIZ APP</h6>
-             <div className="w-1/2 h-screen flex justify-center items-center">
+            <motion.h6
+            initial={{opacity: 0}}
+            animate={{opacity: 1, fontWeight: 900}}
+            transition={{delay: 1}}
+            className="text-xl font-bold fixed top-4 left-10 coming-soon-regular bg-gradient-to-tr from-blue-500 to-purple-500 bg-clip-text text-transparent">QUIZ APP</motion.h6>
+             <motion.div
+             initial = {{y: -300}}
+             animate= {{y: 0}}
+             transition={{duration: 0.2, delay: 0.2}}
+             
+             className="w-1/2 h-screen flex justify-center items-center">
                 <form action="" className="w-full h-1/2 px-7" onSubmit={(e) => senData(e)} onMouseEnter={() => checkInput()}>
                     <div className="w-full flex flex-row justify-around ">
                         <label htmlFor="firstname" className="w-1/2 flex justify-center p-5">
@@ -198,10 +171,18 @@ export default function Register(){
                         </button>
                     </div>
                 </form>
-             </div>
-             <div className="w-1/2  h-screen flex items-center relative bg-white">
-                <div className="w-full h-1/2 bg-white  bg-bg-3 bg-contain bg-no-repeat bg-center rounded-xl absolute -left-6"></div>
-             </div>
+             </motion.div>
+             <motion.div
+             initial={{y: 400}}
+             animate={{y: 0}}
+             transition={{duration: 0.2, delay: 0.2}}
+             className="w-1/2  h-screen flex items-center relative bg-white">
+                <motion.div
+                initial={{x: -200, opacity: 0}}
+                animate={{x:0, opacity:1}}
+                transition={{delay: 0.5}}
+                className="w-full h-1/2 bg-white  bg-bg-3 bg-contain bg-no-repeat bg-center rounded-xl absolute -left-6"></motion.div>
+             </motion.div>
              </div>
 )
 
