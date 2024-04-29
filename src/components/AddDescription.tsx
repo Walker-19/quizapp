@@ -63,7 +63,7 @@ export default function AddDescription(v: descrptionProp){
                     <div className="w-full border-slate-300 font-semibold"></div>
 
                     
-                    <form action="" className="w-full flex gap-5 flex-col p-5" onSubmit={(e) => sendForm(e)} ref={fromref}>
+                    <form action="" className="w-1/2 flex gap-5 flex-col p-5" onSubmit={(e) => sendForm(e)} ref={fromref}>
                         <label htmlFor="title" className="flex flex-col ">
                             
                             <input type="text" name="title" placeholder="Titre" className={`rounded-lg coming-soon-regular placeholder:pl-5 focus:outline-none border-2 p-2 border-slate-300 ${next ? '' : 'bg-slate-100'}`} value={value.title} onChange={(e) => handleChangeValue(e)} />

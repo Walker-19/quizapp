@@ -5,14 +5,14 @@ import { faAd, faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
 import ModalQuiz from "../components/ModalQuiz";
 import { useState } from "react";
 import {AnimatePresence, motion} from 'framer-motion'
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Home(){
 
     const location = useLocation();
     const user = location.state;
     console.log(user);
-    const [showModal, setModal] = useState(false);
+    const navigate = useNavigate(); 
 
     const Quiz = [
         {
@@ -32,28 +32,14 @@ export default function Home(){
         }
     ]
 
+    function PageAdd(){
+        navigate('/addquiz')
+    }
+
     return(<>
         <div className="w-full h-screen bg-slate-100 relative overflow-hidden">
-               <AnimatePresence >
-
-                { showModal && (
-                    
-                    
-                    <motion.div
-                    initial= {{scale: 0.9}}
-                    animate={{scale: 1}}
-                    exit={{scale: 0.9}}
-                    transition={{
-                        duration: 0.3
-                    }}
-                    className="w-full px-20 z-40 absolute flex justify-center items-center h-screen bg-transparent ">
-                        <FontAwesomeIcon icon={faClose}  className="absolute z-10 top-5  right-14 text-red-500 cursor-pointer text-2xl font-bold"  onClick={() => setModal(!showModal)} />
-                        <ModalQuiz />
-                    </motion.div>
-                       
-                       )}
-                </AnimatePresence>
-            <div className="w-14 h-14 rounded-full bg-black absolute bottom-10 right-28 flex justify-center items-center z-20 cursor-pointer" onClick={() => setModal(!showModal)}>
+          
+            <div className="w-14 h-14 rounded-full bg-black absolute bottom-10 right-28 flex justify-center items-center z-20 cursor-pointer" onClick={() => PageAdd()}>
                 <FontAwesomeIcon icon={faAdd} className="text-white text-xl" />
             </div>
           <Nav />

@@ -74,9 +74,9 @@ export default function QuizCard(quiz: Quiz) {
       
     return (
         <>
-            <div className="min-w-80 w-96 min-h-48 bg-white border border-slate-300  rounded-xl hover:shadow-lg shadow-gray-200 hover:translate-x-2 hover:-translate-y-3 transition-all relative">
-                <div className="w-full text-justify py-2 bg-green-500 text-white shadow-md shadow-gray-300 rounded-t-xl">
-                    <p className="text-sm p-2 font-semibold flex flex-wrap">{quiz.question} </p>
+            <div className="min-w-80 w-96 min-h-48 border bg-white border-slate-300  rounded-xl hover:shadow-lg shadow-gray-200 hover:translate-x-2 hover:-translate-y-3 transition-all relative">
+                <div className="w-full text-justify py-2 bg-blue-400 text-white shadow-md  rounded-t-xl">
+                    <p className="text-sm p-2 font-semibold font-mono pl-3 flex flex-wrap">{quiz.question} </p>
                 </div>
                 <div className="w-full h-full p-4">
                     <form className="w-full h-full flex flex-col gap-5" onSubmit={(e) => saveResponse(e)}  ref={formRef} >
@@ -88,7 +88,7 @@ export default function QuizCard(quiz: Quiz) {
                         </div>
                        ))}
                         <li className="w-full border-2 list-none rounded-full px-10 border-dotted text-slate-600 text-sm cursor-pointer border-slate-300" onClick={AddLigne}>+ Ajouter une réponse</li>
-                        <div className="w-full  bg-transparent backdrop-blur-xl flex flex-row justify-around absolute -bottom-5 left-0">
+                        <div className="w-full  bg-transparent flex flex-row justify-around absolute -bottom-5 left-0">
                             <button className="w-max h-max p-2 text-xs bg-gradient-to-tr from-red-500 to-yellow-400 text-white font-bold 4 border-white rounded-xl" type="reset">Supprimer</button>
                             <button className="w-max h-max p-2 text-xs bg-blue-500 text-white font-bold border-4 border-white rounded-xl disabled:bg-blue-300" type="submit" disabled={select_correct ? false : true}>Valider</button>
                         </div>

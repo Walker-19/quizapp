@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Home from './pages/home';
 import Favoris from './pages/Favoris';
 import SingleQuiz from './pages/SinglePubQuiz';
+import AddQuiz from './pages/AddQuiz';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Register />
+      },
+      {
+          path: '/addquiz',
+          element: <AddQuiz />
       },
       {
         path: '/home',

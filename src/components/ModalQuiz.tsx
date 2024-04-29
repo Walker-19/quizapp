@@ -60,8 +60,15 @@ export default function ModalQuiz (){
             <div className="w-modal rounded-xl min-h-modal absolute bg-white overflow-hidden" onClick={handleClose}>
                    <div className="w-full flex justify-center items-center relative p-5 gap-8">
                    </div>
-                   <div className="w-full min-h-96 flex justify-center items-center overscroll-y-auto">
-
+                   <div className="w-full min-h-96 flex flex-col justify-center items-center overscroll-y-auto">
+                        <div className="w-full flex flex-row justify-around">
+                            <div className="w-5 h-5 flex justify-center items-center font-bold text-2xl p-5 bg-blue-700 text-white rounded-full">
+                                <span>1</span>
+                            </div>
+                            <div className="w-5 h-5 flex justify-center items-center font-bold text-2xl p-5  bg-white text-black border-2 border-dashed border-blue-700 rounded-full">
+                                <span>2</span>
+                            </div>
+                        </div>
                    { select === 0 ? (<AddDescription modal={modal} id={0} next={() => setSelect(1)} />) :(
                    <div className="w-full ">
                    { showQuiz && (<FormAddQuiz submit={AddQuiz} value={valueQ} valueChange={(e) => handleChange(e.target.value)} box={modal} />)}
